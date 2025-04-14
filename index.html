@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistema de Cardápio com Carrinho</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header class="header">
+        <div class="container header-content">
+            <h1>Cardápio Digital</h1>
+            <button id="cartButton" class="cart-button">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="8" cy="21" r="1"/><circle cx="19" cy="21" r="1"/><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"/></svg>
+                <span id="cartCount" class="cart-count hidden">0</span>
+            </button>
+        </div>
+    </header>
+
+    <main class="container main-content">
+        <!-- Seções do cardápio serão inseridas aqui via JavaScript -->
+    </main>
+
+    <!-- Modal do Carrinho -->
+    <div id="cartModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Seu Pedido</h2>
+                <button id="closeModal" class="close-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <div id="cartItems" class="cart-items">
+                <!-- Itens do carrinho serão inseridos aqui -->
+            </div>
+            <div id="cartEmpty" class="cart-empty">
+                <p>Seu carrinho está vazio</p>
+            </div>
+            <div id="cartFooter" class="cart-footer hidden">
+                <div class="cart-total">
+                    <span>Total</span>
+                    <span id="cartTotalPrice" class="cart-total-price">R$ 0,00</span>
+                </div>
+                <button id="finishOrder" class="finish-button">Finalizar Pedido</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal de Checkout -->
+    <div id="checkoutModal" class="modal hidden">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Finalizar Pedido</h2>
+                <button id="closeCheckout" class="close-button">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+                </button>
+            </div>
+            <form id="checkoutForm" class="checkout-form">
+                <div class="form-section">
+                    <h3>Dados de Entrega</h3>
+                    <div class="form-group">
+                        <label for="nome">Nome Completo</label>
+                        <input type="text" id="nome" name="nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="telefone">Telefone</label>
+                        <input type="tel" id="telefone" name="telefone" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="cep">CEP</label>
+                        <input type="text" id="cep" name="cep" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="endereco">Endereço</label>
+                        <input type="text" id="endereco" name="endereco" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="numero">Número</label>
+                        <input type="text" id="numero" name="numero" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="complemento">Complemento</label>
+                        <input type="text" id="complemento" name="complemento">
+                    </div>
+                    <div class="form-group">
+                        <label for="bairro">Bairro</label>
+                        <input type="text" id="bairro" name="bairro" required>
+                    </div>
+                </div>
+                
+                <div class="form-section">
+                    <h3>Forma de Pagamento</h3>
+                    <div class="payment-methods">
+                        <label class="payment-method">
+                            <input type="radio" name="pagamento" value="pix" required>
+                            <span class="payment-label">PIX</span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="pagamento" value="cartao" required>
+                            <span class="payment-label">Cartão na Entrega</span>
+                        </label>
+                        <label class="payment-method">
+                            <input type="radio" name="pagamento" value="dinheiro" required>
+                            <span class="payment-label">Dinheiro</span>
+                        </label>
+                    </div>
+                    <div id="trocoGroup" class="form-group hidden">
+                        <label for="troco">Troco para quanto?</label>
+                        <input type="number" id="troco" name="troco" step="0.01" min="0">
+                    </div>
+                </div>
+
+                <div class="checkout-summary">
+                    <div class="summary-row">
+                        <span>Subtotal:</span>
+                        <span id="checkoutSubtotal">R$ 0,00</span>
+                    </div>
+                    <div class="summary-row">
+                        <span>Taxa de entrega:</span>
+                        <span id="checkoutDelivery">R$ 5,00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>Total:</span>
+                        <span id="checkoutTotal">R$ 0,00</span>
+                    </div>
+                </div>
+
+                <button type="submit" class="finish-button">Confirmar Pedido</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Botão flutuante do carrinho -->
+    <div id="floatingCart" class="floating-cart hidden">
+        <div class="floating-cart-content">
+            <div>
+                <p id="floatingCartItems" class="floating-cart-items">0 itens</p>
+                <p id="floatingCartTotal" class="floating-cart-total">Total: R$ 0,00</p>
+            </div>
+            <button id="viewOrder" class="view-order-button">Ver Pedido</button>
+        </div>
+    </div>
+
+    <script src="produtos.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
