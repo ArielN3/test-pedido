@@ -177,40 +177,57 @@ document.querySelectorAll('input[name="pagamento"]').forEach(radio => {
 checkoutForm.addEventListener('submit', (e) => {
     e.preventDefault();
     
+    // 1. Coletar todos os dados do formulário
     const formData = new FormData(checkoutForm);
-    const pedido = {
-        items: carrinho,
-        cliente: {
-            nome: formData.get('nome'),
-            telefone: formData.get('telefone'),
-            endereco: {
-                cep: formData.get('cep'),
-                logradouro: formData.get('endereco'),
-                numero: formData.get('numero'),
-                complemento: formData.get('complemento'),
-                bairro: formData.get('bairro')
-            }
-        },
-        pagamento: {
-            metodo: formData.get('pagamento'),
-            troco: formData.get('troco') || null
-        },
-        valores: {
-            subtotal: carrinho.reduce((total, item) => total + (item.quantidade * item.precoUnitario), 0),
-            taxaEntrega: TAXA_ENTREGA,
-            total: carrinho.reduce((total, item) => total + (item.quantidade * item.precoUnitario), 0) + TAXA_ENTREGA
-        }
-    };
     
-    // Aqui você pode enviar o pedido para seu backend
-    console.log('Pedido finalizado:', pedido);
+    // 2. Verificar se todos os campos obrigatórios estão preenchidos
+    const nome = formData.get('nome') || 'Não informado';
+    const telefone = formData.get('telefone') || 'Não informado';
+    const endereco = formData.get('endereco') || 'Não informado';
+    const numero = formData.get('numero') || 'S/N';
+    const bairro = formData.get('bairro') || 'Não informado';
     
-    alert('Pedido realizado com sucesso!');
+    // 3. Criar mensagem para WhatsApp
+    let mensagem = `*✅ NOVO PEDIDO*%0A%0A`;
+    mensagem += `*Cliente:* ${nome}%0A`;
+    mensagem += `*Telefone:* ${telefone}%0A%0A`;
+    mensagem += `*📍 Endereço*%0A`;
+    mensagem += `${endereco}, ${numero}%0A`;
+    mensagem += `${bairro}%0A`;
+    
+    if (formData.get('complemento')) {
+        mensagem += `Complemento: ${formData.get('complemento')}%0A`;
+    }
+    
+    mensagem += `%0A*🍽️ Pedido:*%0A`;
+    
+    carrinho.forEach(item => {
+        mensagem += `- ${item.nome} (${item.quantidade}x) R$ ${(item.precoUnitario * item.quantidade).toFixed(2)}%0A`;
+    });
+    
+    mensagem += `%0A*Total: R$ ${calcularTotal().toFixed(2)}*%0A`;
+    
+    // 4. Formatar número corretamente (IMPORTANTE!)
+    const numeroLojista = "5561981227195"; // SUBSTITUA pelo número REAL
+    // Formato obrigatório: 55 + DDD + número (sem espaços, hífens ou parênteses)
+    
+    // 5. Criar link do WhatsApp
+    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${5561981227195}&text=${mensagem}`;
+    
+    // 6. Debug (verifique no console)
+    console.log("URL WhatsApp:", urlWhatsApp);
+    
+    // 7. Abrir WhatsApp
+    window.location.href = urlWhatsApp; // Método mais confiável
+    
+    // 8. Limpar carrinho (opcional)
     carrinho = [];
     atualizarInterface();
     checkoutModal.classList.add('hidden');
-    checkoutForm.reset();
 });
 
+function calcularTotal() {
+    return carrinho.reduce((total, item) => total + (item.quantidade * item.precoUnitario), 0) + TAXA_ENTREGA;
+}
 // Inicialização
 renderizarCardapio();
