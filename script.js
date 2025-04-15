@@ -208,11 +208,11 @@ checkoutForm.addEventListener('submit', (e) => {
     mensagem += `%0A*Total: R$ ${calcularTotal().toFixed(2)}*%0A`;
     
     // 4. Formatar número corretamente (IMPORTANTE!)
-    const numeroLojista = "5561981227195"; // SUBSTITUA pelo número REAL
+    const numeroLojista = "5561982379031"; // SUBSTITUA pelo número REAL
     // Formato obrigatório: 55 + DDD + número (sem espaços, hífens ou parênteses)
     
     // 5. Criar link do WhatsApp
-    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${5561981227195}&text=${mensagem}`;
+    const urlWhatsApp = `https://api.whatsapp.com/send?phone=${5561982379031}&text=${mensagem}`;
     
     // 6. Debug (verifique no console)
     console.log("URL WhatsApp:", urlWhatsApp);
